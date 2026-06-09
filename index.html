@@ -1,0 +1,1250 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DEAN AIM Global — Social Media Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --g:#C9A84C;--gl:#E8C97A;--gd:rgba(201,168,76,0.12);
+  --bg:#08080A;--s1:#0E0E11;--s2:#141417;--s3:#1A1A1E;--s4:#222228;
+  --t1:#F0EDE8;--t2:#9A9488;--t3:#525049;
+  --green:#4ADE80;--blue:#60A5FA;--purple:#A78BFA;--red:#F87171;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;display:flex;flex-direction:column;}
+
+/* HEADER */
+header{background:rgba(8,8,10,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(201,168,76,0.1);padding:0 1.5rem;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;flex-shrink:0;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:32px;height:32px;background:var(--gd);border:1px solid rgba(201,168,76,0.3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-size:16px;color:var(--g);font-weight:400;}
+.logo-text{font-size:14px;font-weight:600;color:var(--t1);}
+.logo-sub{font-size:10px;color:var(--t3);font-weight:400;letter-spacing:1px;}
+.header-right{display:flex;align-items:center;gap:1rem;}
+.hbadge{background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.2);color:var(--green);font-size:10px;font-weight:500;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;letter-spacing:0.5px;}
+.hbadge::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* LAYOUT */
+.app{display:flex;flex:1;height:calc(100vh - 60px);}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--s1);border-right:1px solid rgba(255,255,255,0.04);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.sidebar-section{padding:1.25rem 1rem 0.5rem;}
+.sidebar-label{font-size:9px;font-weight:600;color:var(--t3);letter-spacing:2px;margin-bottom:0.75rem;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:5px;cursor:pointer;transition:all 0.15s;margin-bottom:2px;font-size:13px;color:var(--t2);font-weight:400;border:1px solid transparent;}
+.nav-item:hover{background:var(--s3);color:var(--t1);}
+.nav-item.active{background:var(--gd);border-color:rgba(201,168,76,0.2);color:var(--g);}
+.nav-item i{font-size:15px;flex-shrink:0;width:18px;}
+.nav-divider{height:1px;background:rgba(255,255,255,0.04);margin:0.75rem 1rem;}
+
+.stat-cards{padding:1rem;}
+.stat-c{background:var(--s2);border:1px solid rgba(255,255,255,0.05);border-radius:6px;padding:0.75rem;margin-bottom:0.5rem;}
+.stat-c-label{font-size:10px;color:var(--t3);margin-bottom:3px;}
+.stat-c-val{font-family:'Instrument Serif',serif;font-size:1.4rem;color:var(--g);}
+.stat-c-sub{font-size:10px;color:var(--t3);margin-top:1px;}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* TABS */
+.tabs{display:flex;border-bottom:1px solid rgba(255,255,255,0.05);background:var(--s1);padding:0 1.5rem;flex-shrink:0;}
+.tab{padding:0.85rem 1.25rem;font-size:12px;font-weight:500;color:var(--t3);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.tab:hover{color:var(--t2);}
+.tab.active{color:var(--g);border-bottom-color:var(--g);}
+.tab i{font-size:14px;}
+
+/* PANELS */
+.panels{flex:1;overflow-y:auto;padding:1.5rem;}
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* AGENT PANEL */
+.agent-layout{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;height:100%;}
+@media(max-width:900px){.agent-layout{grid-template-columns:1fr;}}
+
+.card{background:var(--s2);border:1px solid rgba(255,255,255,0.05);border-radius:8px;overflow:hidden;}
+.card-head{padding:1rem 1.25rem;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:space-between;}
+.card-title{font-size:13px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:8px;}
+.card-title i{font-size:15px;color:var(--g);}
+.card-body{padding:1.25rem;}
+
+/* INPUT AREA */
+.input-group{margin-bottom:1rem;}
+.input-label{font-size:11px;font-weight:500;color:var(--t3);letter-spacing:0.5px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;}
+.input-label span{font-size:10px;color:var(--t3);}
+textarea.ai-input,select.ai-select,input.ai-input{width:100%;background:var(--s3);border:1px solid rgba(255,255,255,0.07);color:var(--t1);font-size:13px;padding:10px 13px;border-radius:5px;font-family:'Space Grotesk',sans-serif;transition:border-color 0.2s;resize:none;}
+textarea.ai-input{min-height:90px;}
+textarea.ai-input:focus,select.ai-select:focus,input.ai-input:focus{outline:none;border-color:rgba(201,168,76,0.35);}
+textarea.ai-input::placeholder,input.ai-input::placeholder{color:var(--t3);}
+select.ai-select{appearance:none;cursor:pointer;}
+
+.platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem;}
+.plat-btn{padding:8px 10px;background:var(--s3);border:1px solid rgba(255,255,255,0.06);border-radius:5px;font-size:11px;font-weight:500;color:var(--t2);cursor:pointer;transition:all 0.15s;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px;}
+.plat-btn:hover{border-color:rgba(201,168,76,0.2);color:var(--t1);}
+.plat-btn.selected{background:var(--gd);border-color:rgba(201,168,76,0.35);color:var(--g);}
+.plat-btn i{font-size:14px;}
+
+.gen-btn{width:100%;padding:12px;background:var(--g);color:#08080A;font-size:13px;font-weight:600;border:none;border-radius:5px;cursor:pointer;font-family:'Space Grotesk',sans-serif;letter-spacing:0.5px;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.gen-btn:hover{background:var(--gl);}
+.gen-btn:disabled{background:var(--s4);color:var(--t3);cursor:not-allowed;}
+.gen-btn i{font-size:16px;}
+
+/* OUTPUT */
+.output-area{min-height:200px;}
+.output-placeholder{text-align:center;padding:3rem 1rem;color:var(--t3);}
+.output-placeholder i{font-size:32px;color:var(--t3);display:block;margin-bottom:0.75rem;}
+.output-placeholder p{font-size:13px;line-height:1.6;}
+
+.result-block{background:var(--s3);border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:1.25rem;margin-bottom:1rem;position:relative;}
+.result-block-label{font-size:10px;font-weight:600;color:var(--g);letter-spacing:1.5px;margin-bottom:0.75rem;display:flex;align-items:center;justify-content:space-between;}
+.result-block-label .copy-btn{background:var(--s4);border:none;color:var(--t2);font-size:10px;padding:3px 10px;border-radius:3px;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all 0.15s;display:flex;align-items:center;gap:4px;}
+.result-block-label .copy-btn:hover{color:var(--g);}
+.result-text{font-size:13px;color:var(--t2);line-height:1.75;white-space:pre-wrap;}
+.result-text strong{color:var(--t1);}
+
+.loading-bar{display:none;padding:2rem;text-align:center;}
+.loading-bar p{font-size:12px;color:var(--t3);margin-top:0.75rem;}
+.spinner{width:28px;height:28px;border:2px solid rgba(201,168,76,0.15);border-top-color:var(--g);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* DM PANEL */
+.dm-layout{display:grid;grid-template-columns:280px 1fr;gap:1.5rem;}
+@media(max-width:860px){.dm-layout{grid-template-columns:1fr;}}
+.dm-types{display:flex;flex-direction:column;gap:0.5rem;}
+.dm-type-btn{padding:10px 14px;background:var(--s2);border:1px solid rgba(255,255,255,0.05);border-radius:6px;font-size:12px;color:var(--t2);cursor:pointer;transition:all 0.15s;text-align:left;font-family:'Space Grotesk',sans-serif;display:flex;align-items:center;gap:10px;}
+.dm-type-btn:hover{border-color:rgba(201,168,76,0.2);color:var(--t1);}
+.dm-type-btn.active{background:var(--gd);border-color:rgba(201,168,76,0.25);color:var(--g);}
+.dm-type-btn i{font-size:16px;flex-shrink:0;}
+.dm-type-desc{font-size:10px;color:var(--t3);margin-top:2px;display:block;font-weight:400;}
+
+/* OBJECTION PANEL */
+.obj-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:720px){.obj-grid{grid-template-columns:1fr;}}
+.obj-card{background:var(--s2);border:1px solid rgba(255,255,255,0.05);border-radius:8px;overflow:hidden;}
+.obj-card-top{padding:1rem;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;align-items:flex-start;gap:10px;}
+.obj-icon{width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
+.obj-card h4{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:3px;}
+.obj-card p.obj-q{font-size:11px;color:var(--t3);font-style:italic;}
+.obj-body{padding:1rem;}
+.obj-response{font-size:12px;color:var(--t2);line-height:1.7;}
+.obj-copy{margin-top:0.75rem;background:transparent;border:1px solid rgba(201,168,76,0.2);color:var(--g);font-size:11px;padding:5px 14px;border-radius:3px;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all 0.15s;display:flex;align-items:center;gap:5px;width:fit-content;}
+.obj-copy:hover{background:var(--gd);}
+
+/* CALENDAR PANEL */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0.5rem;margin-bottom:1rem;}
+.cal-day-label{text-align:center;font-size:10px;font-weight:600;color:var(--t3);letter-spacing:1px;padding:0.5rem 0;}
+.cal-cell{background:var(--s2);border:1px solid rgba(255,255,255,0.05);border-radius:5px;padding:0.6rem;min-height:80px;cursor:pointer;transition:border-color 0.15s;}
+.cal-cell:hover{border-color:rgba(201,168,76,0.2);}
+.cal-cell.has-post{border-color:rgba(201,168,76,0.25);background:rgba(201,168,76,0.04);}
+.cal-num{font-size:11px;font-weight:600;color:var(--t3);margin-bottom:4px;}
+.cal-post-tag{font-size:9px;background:var(--gd);color:var(--g);padding:2px 6px;border-radius:3px;margin-bottom:2px;display:block;line-height:1.4;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.cal-post-tag.fb{background:rgba(96,165,250,0.1);color:var(--blue);}
+.cal-post-tag.wa{background:rgba(74,222,128,0.1);color:var(--green);}
+
+/* COPY TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--s4);border:1px solid rgba(201,168,76,0.3);color:var(--g);font-size:12px;padding:10px 18px;border-radius:5px;z-index:999;opacity:0;transform:translateY(10px);transition:all 0.25s;pointer-events:none;display:flex;align-items:center;gap:6px;}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* QUICK ACTIONS */
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1.5rem;}
+@media(max-width:600px){.quick-grid{grid-template-columns:1fr 1fr;}}
+.quick-btn{background:var(--s2);border:1px solid rgba(255,255,255,0.05);border-radius:6px;padding:1rem;cursor:pointer;transition:all 0.15s;text-align:left;font-family:'Space Grotesk',sans-serif;}
+.quick-btn:hover{border-color:rgba(201,168,76,0.2);background:var(--s3);}
+.quick-btn i{font-size:20px;color:var(--g);display:block;margin-bottom:0.5rem;}
+.quick-btn-title{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:2px;}
+.quick-btn-sub{font-size:10px;color:var(--t3);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--s4);border-radius:4px;}
+
+/* FACEBOOK specific styles */
+.fb-note{background:rgba(96,165,250,0.06);border:1px solid rgba(96,165,250,0.15);border-radius:5px;padding:0.75rem 1rem;font-size:12px;color:var(--blue);margin-bottom:1rem;display:flex;gap:8px;align-items:flex-start;line-height:1.6;}
+.fb-note i{font-size:15px;flex-shrink:0;margin-top:1px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">D</div>
+    <div>
+      <div class="logo-text">DEAN AIM Global</div>
+      <div class="logo-sub">SOCIAL MEDIA AGENT</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="hbadge">AI AGENT ACTIVE</div>
+  </div>
+</header>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">AGENT TOOLS</div>
+      <div class="nav-item active" onclick="switchTab('generate')">
+        <i class="ti ti-wand"></i> Content Generator
+      </div>
+      <div class="nav-item" onclick="switchTab('dm')">
+        <i class="ti ti-message-circle"></i> DM Scripts
+      </div>
+      <div class="nav-item" onclick="switchTab('objections')">
+        <i class="ti ti-shield"></i> Objection Handler
+      </div>
+      <div class="nav-item" onclick="switchTab('calendar')">
+        <i class="ti ti-calendar"></i> Content Calendar
+      </div>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">FOCUS PLATFORM</div>
+      <div class="nav-item" onclick="setFocus('facebook')">
+        <i class="ti ti-brand-facebook" style="color:#60A5FA;"></i> Facebook
+      </div>
+      <div class="nav-item" onclick="setFocus('whatsapp')">
+        <i class="ti ti-brand-whatsapp" style="color:#4ADE80;"></i> WhatsApp
+      </div>
+      <div class="nav-item" onclick="setFocus('tiktok')">
+        <i class="ti ti-brand-tiktok"></i> TikTok
+      </div>
+      <div class="nav-item" onclick="setFocus('instagram')">
+        <i class="ti ti-brand-instagram" style="color:#A78BFA;"></i> Instagram
+      </div>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="stat-cards">
+      <div class="sidebar-label">YOUR LINKS</div>
+      <div class="stat-c">
+        <div class="stat-c-label">Discord</div>
+        <div style="font-size:11px;color:var(--g);word-break:break-all;">discord.gg/TvyFjdPqg</div>
+      </div>
+      <div class="stat-c">
+        <div class="stat-c-label">WhatsApp</div>
+        <div style="font-size:11px;color:var(--green);">+234 7043985667</div>
+      </div>
+      <div class="stat-c">
+        <div class="stat-c-label">Email</div>
+        <div style="font-size:11px;color:var(--t2);">aimdean916@gmail.com</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="tabs">
+      <div class="tab active" id="tab-generate" onclick="switchTab('generate')"><i class="ti ti-wand"></i>Content Generator</div>
+      <div class="tab" id="tab-dm" onclick="switchTab('dm')"><i class="ti ti-message-circle"></i>DM Scripts</div>
+      <div class="tab" id="tab-objections" onclick="switchTab('objections')"><i class="ti ti-shield"></i>Objections</div>
+      <div class="tab" id="tab-calendar" onclick="switchTab('calendar')"><i class="ti ti-calendar"></i>Calendar</div>
+    </div>
+
+    <div class="panels">
+
+      <!-- ══ PANEL: CONTENT GENERATOR ══ -->
+      <div class="panel active" id="panel-generate">
+        <div class="fb-note">
+          <i class="ti ti-brand-facebook"></i>
+          <span><strong>Facebook first strategy:</strong> Since your personal Facebook is already gaining traction, the agent prioritises Facebook-safe language. TikTok versions use storytelling-only mode to avoid flags.</span>
+        </div>
+
+        <div class="quick-grid">
+          <button class="quick-btn" onclick="quickFill('curiosity hook — tease the opportunity without naming it directly')">
+            <i class="ti ti-eye"></i>
+            <div class="quick-btn-title">Curiosity Hook</div>
+            <div class="quick-btn-sub">Stop the scroll</div>
+          </button>
+          <button class="quick-btn" onclick="quickFill('share my personal story building DEAN AIM Global in Nigeria from the beginning')">
+            <i class="ti ti-user-heart"></i>
+            <div class="quick-btn-title">Personal Story</div>
+            <div class="quick-btn-sub">Build trust fast</div>
+          </button>
+          <button class="quick-btn" onclick="quickFill('explain how the binary team system works in simple everyday language')">
+            <i class="ti ti-sitemap"></i>
+            <div class="quick-btn-title">Explain the System</div>
+            <div class="quick-btn-sub">Educate the audience</div>
+          </button>
+          <button class="quick-btn" onclick="quickFill('NAFDAC approved products and physical Nigeria offices — proof this is real')">
+            <i class="ti ti-certificate"></i>
+            <div class="quick-btn-title">Proof of Legitimacy</div>
+            <div class="quick-btn-sub">Kill the scam objection</div>
+          </button>
+          <button class="quick-btn" onclick="quickFill('show what results look like for real people in Nigeria without making income claims')">
+            <i class="ti ti-trending-up"></i>
+            <div class="quick-btn-title">Results Story</div>
+            <div class="quick-btn-sub">Social proof</div>
+          </button>
+          <button class="quick-btn" onclick="quickFill('drive people to join the Discord community at discord.gg/TvyFjdPqg without sounding salesy')">
+            <i class="ti ti-brand-discord"></i>
+            <div class="quick-btn-title">Discord CTA</div>
+            <div class="quick-btn-sub">Grow the community</div>
+          </button>
+        </div>
+
+        <div class="agent-layout">
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title"><i class="ti ti-pencil"></i>What do you want to post about?</div>
+            </div>
+            <div class="card-body">
+              <div class="input-group">
+                <div class="input-label">YOUR TOPIC OR IDEA</div>
+                <textarea class="ai-input" id="topic-input" placeholder="e.g. I want to talk about how someone in Lagos can start with ₦130,000 and build a team from home..."></textarea>
+              </div>
+              <div class="input-group">
+                <div class="input-label">CONTENT TYPE</div>
+                <select class="ai-select" id="content-type">
+                  <option value="story">Personal Story / Testimony</option>
+                  <option value="education">Education (Explain how it works)</option>
+                  <option value="curiosity">Curiosity Hook (Tease, no direct pitch)</option>
+                  <option value="proof">Proof of Legitimacy</option>
+                  <option value="cta">Community Invite / CTA</option>
+                  <option value="mindset">Mindset / Motivation</option>
+                  <option value="faq">FAQ Response (Turn question into content)</option>
+                  <option value="result">Results / Social Proof</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <div class="input-label">SELECT PLATFORMS</div>
+                <div class="platform-grid">
+                  <div class="plat-btn selected" id="plat-facebook" onclick="togglePlat('facebook')"><i class="ti ti-brand-facebook"></i>Facebook</div>
+                  <div class="plat-btn selected" id="plat-whatsapp" onclick="togglePlat('whatsapp')"><i class="ti ti-brand-whatsapp"></i>WhatsApp</div>
+                  <div class="plat-btn" id="plat-tiktok" onclick="togglePlat('tiktok')"><i class="ti ti-brand-tiktok"></i>TikTok</div>
+                  <div class="plat-btn" id="plat-instagram" onclick="togglePlat('instagram')"><i class="ti ti-brand-instagram"></i>Instagram</div>
+                </div>
+              </div>
+              <div class="input-group">
+                <div class="input-label">TONE</div>
+                <select class="ai-select" id="tone-select">
+                  <option value="personal">Personal & Real (recommended)</option>
+                  <option value="educational">Educational & Clear</option>
+                  <option value="motivational">Motivational & Inspiring</option>
+                  <option value="curious">Mysterious & Intriguing</option>
+                  <option value="direct">Direct & Confident</option>
+                </select>
+              </div>
+              <button class="gen-btn" id="gen-btn" onclick="generateContent()">
+                <i class="ti ti-sparkles"></i>Generate Content
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title"><i class="ti ti-file-text"></i>Generated Content</div>
+            </div>
+            <div class="card-body output-area" id="output-area">
+              <div class="output-placeholder">
+                <i class="ti ti-wand"></i>
+                <p>Your platform-ready content will appear here.<br/>Fill in the topic and click Generate.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ PANEL: DM SCRIPTS ══ -->
+      <div class="panel" id="panel-dm">
+        <div class="dm-layout">
+          <div>
+            <div class="card-title" style="margin-bottom:1rem;font-size:13px;"><i class="ti ti-message-circle" style="color:var(--g);font-size:15px;margin-right:6px;"></i>Choose DM Type</div>
+            <div class="dm-types">
+              <button class="dm-type-btn active" onclick="showDM('first')"><i class="ti ti-hand-stop"></i><div><span style="font-weight:600;font-size:12px;">First Contact</span><span class="dm-type-desc">Message someone for the first time</span></div></button>
+              <button class="dm-type-btn" onclick="showDM('followup')"><i class="ti ti-clock"></i><div><span style="font-weight:600;font-size:12px;">Follow Up</span><span class="dm-type-desc">They showed interest but went quiet</span></div></button>
+              <button class="dm-type-btn" onclick="showDM('interested')"><i class="ti ti-fire"></i><div><span style="font-weight:600;font-size:12px;">Warm Lead</span><span class="dm-type-desc">They commented or asked a question</span></div></button>
+              <button class="dm-type-btn" onclick="showDM('website')"><i class="ti ti-world"></i><div><span style="font-weight:600;font-size:12px;">Send the Website</span><span class="dm-type-desc">Hand them your site naturally</span></div></button>
+              <button class="dm-type-btn" onclick="showDM('discord')"><i class="ti ti-brand-discord"></i><div><span style="font-weight:600;font-size:12px;">Invite to Discord</span><span class="dm-type-desc">Move them to the community</span></div></button>
+              <button class="dm-type-btn" onclick="showDM('consult')"><i class="ti ti-calendar"></i><div><span style="font-weight:600;font-size:12px;">Book Consultation</span><span class="dm-type-desc">Close to a real conversation</span></div></button>
+              <button class="dm-type-btn" onclick="showDM('nurture')"><i class="ti ti-heart"></i><div><span style="font-weight:600;font-size:12px;">Long-term Nurture</span><span class="dm-type-desc">Keep them warm over weeks</span></div></button>
+            </div>
+          </div>
+          <div id="dm-output"></div>
+        </div>
+      </div>
+
+      <!-- ══ PANEL: OBJECTIONS ══ -->
+      <div class="panel" id="panel-objections">
+        <div style="margin-bottom:1.25rem;">
+          <div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:0.5rem;">Ready-to-send objection responses</div>
+          <div style="font-size:12px;color:var(--t3);">Copy any response and paste directly into WhatsApp, Facebook Messenger, or the comments. Written for Nigeria and DEAN AIM Global.</div>
+        </div>
+        <div class="obj-grid" id="obj-grid"></div>
+      </div>
+
+      <!-- ══ PANEL: CALENDAR ══ -->
+      <div class="panel" id="panel-calendar">
+        <div style="margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+          <div>
+            <div style="font-size:16px;font-weight:600;color:var(--t1);font-family:'Instrument Serif',serif;">30-Day Content Plan</div>
+            <div style="font-size:12px;color:var(--t3);margin-top:3px;">Your pre-planned DEAN AIM Global posting schedule</div>
+          </div>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--g);"><div style="width:8px;height:8px;background:var(--gd);border:1px solid var(--g);border-radius:2px;"></div>Facebook</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--blue);"><div style="width:8px;height:8px;background:rgba(96,165,250,0.15);border:1px solid var(--blue);border-radius:2px;"></div>WhatsApp Status</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--green);"><div style="width:8px;height:8px;background:rgba(74,222,128,0.1);border:1px solid var(--green);border-radius:2px;"></div>All Platforms</div>
+          </div>
+        </div>
+        <div id="calendar-container"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="ti ti-check"></i><span id="toast-msg">Copied!</span></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+
+<script>
+// ══ BUSINESS CONTEXT ══
+const BIZ = {
+  name: "DEAN AIM Global",
+  platform: "Alliance in Motion Global (AIM Global)",
+  discord: "discord.gg/TvyFjdPqg",
+  whatsapp: "+234 7043985667",
+  email: "aimdean916@gmail.com",
+  nafdac: true,
+  offices: ["Lagos — Buffalo House, 2 Allen Ave, Ikeja","Abuja — No.6 Kikuyu Close, Wuse 2","Onitsha — No.87 Upper New Market Rd"],
+  packages: {
+    "Liteverse":"₦52,500","Entreverse":"₦80,000",
+    "Neoverse":"₦130,000","Technoverse":"₦259,990",
+    "Digiverse":"₦500,000","Megaverse":"₦999,990"
+  }
+};
+
+// ══ TAB SWITCHING ══
+function switchTab(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  if(name==='objections') renderObjections();
+  if(name==='calendar') renderCalendar();
+  if(name==='dm') showDM('first');
+}
+
+function setFocus(plat){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  switchTab('generate');
+  // auto-select that platform
+  document.querySelectorAll('.plat-btn').forEach(b=>b.classList.remove('selected'));
+  const el = document.getElementById('plat-'+plat);
+  if(el) el.classList.add('selected');
+}
+
+// ══ PLATFORM TOGGLE ══
+const selectedPlats = new Set(['facebook','whatsapp']);
+function togglePlat(p){
+  const el = document.getElementById('plat-'+p);
+  if(selectedPlats.has(p)){
+    if(selectedPlats.size===1) return;
+    selectedPlats.delete(p); el.classList.remove('selected');
+  } else {
+    selectedPlats.add(p); el.classList.add('selected');
+  }
+}
+
+function quickFill(text){
+  document.getElementById('topic-input').value = text;
+  switchTab('generate');
+}
+
+// ══ CONTENT TEMPLATES ══
+const TEMPLATES = {
+  facebook:{
+    story:`📌 I want to share something personal today.
+
+{TOPIC}
+
+I'm part of a team called DEAN AIM Global — we're the Nigerian arm of Alliance in Motion Global, a company that has been operating since 2006 across 50+ countries.
+
+The products are NAFDAC approved. The offices are real — Lagos, Abuja, and Onitsha. The system is real.
+
+I'm not here to sell you anything in this post. I just want you to know this exists — and that there are Nigerians already building something serious with it.
+
+If you're curious, drop a comment or send me a message. I'll point you to the right information and let you decide for yourself.
+
+👇 Or join our community directly: discord.gg/TvyFjdPqg`,
+
+    curiosity:`Something I discovered changed how I think about income.
+
+{TOPIC}
+
+I'm not going to explain it fully in this post — not because I'm being secretive, but because it takes a proper conversation to really get it.
+
+What I will say is this: it's legal. It's Nigerian-registered. It's been running globally since 2006. And you don't need to leave your house to build it.
+
+If that's enough to make you curious — send me a message. I promise no pressure, no pitch. Just information.
+
+💬 discord.gg/TvyFjdPqg`,
+
+    education:`Let me explain something that most people misunderstand.
+
+{TOPIC}
+
+At DEAN AIM Global, we use a binary network system. Here's what that means in simple terms:
+
+→ You join and get a business account
+→ You bring two people in — one goes left, one goes right
+→ When both sides are active, the system matches them and pays you automatically
+→ As your team grows deeper, you keep earning from more levels
+
+There are 8 total ways the system pays. Most people start with 2 and the rest unlock as their team grows.
+
+Packages start from ₦52,500. The most recommended starting point is the Neoverse at ₦130,000 — which gives you 3 accounts in one package.
+
+Questions? Drop them below or message me directly.
+📲 discord.gg/TvyFjdPqg`,
+
+    proof:`Before you scroll past — let me show you why this is different.
+
+{TOPIC}
+
+✅ AIM Global has been operating since 2006 — 18 years
+✅ Active in 50+ countries including Nigeria, Ghana, Kenya, South Africa, UAE, India
+✅ Products approved by NAFDAC — Nigeria's own regulatory body
+✅ Physical offices in Lagos (Ikeja), Abuja (Wuse 2), and Onitsha (Anambra)
+
+You can walk into any of those offices this week. Meet the staff. See the products. Ask every question you have.
+
+Real things can be verified. This one can.
+
+If you want to know more, come into our community: discord.gg/TvyFjdPqg`,
+
+    cta:`If you've been seeing my posts about DEAN AIM Global and something has been pulling at you — today is a good day to stop wondering.
+
+{TOPIC}
+
+Our community is open. No pressure. No commitment required to join.
+
+Inside you'll find:
+→ Full explanation of how the business works
+→ Real people building from different states in Nigeria
+→ Live Q&A sessions weekly
+→ Me — available to answer every question personally
+
+Join here: discord.gg/TvyFjdPqg
+
+Or send me a WhatsApp message: +234 7043985667
+
+The information is free. The decision is always yours.`,
+
+    mindset:`{TOPIC}
+
+I think about this sometimes:
+
+Out of every 100 people you know right now — most will still be in the same financial position in 5 years. Not because they're not hardworking. But because they never found a different system.
+
+DEAN AIM Global is a different system.
+
+I'm not claiming it's perfect or effortless. It's a real business that takes real work. But for people who are ready to do something different — it's worth a conversation.
+
+Message me. Or join here: discord.gg/TvyFjdPqg`,
+
+    faq:`Question I get asked a lot:
+
+{TOPIC}
+
+Here's my honest answer:
+
+[The agent will personalise this based on your topic. Common FAQ answers are in the Objections tab — copy and adapt them.]
+
+If you have your own question — drop it in the comments. I reply to every single one. Or join our community where I answer questions daily:
+
+discord.gg/TvyFjdPqg`,
+
+    result:`Real results from real people. No hype.
+
+{TOPIC}
+
+I'll keep it simple — because I don't like inflated claims.
+
+People in our team have used this business to:
+→ Build multiple income streams from home
+→ Cover expenses that a single salary couldn't
+→ Create flexibility they didn't have in a 9-to-5
+
+None of them were rich before they started. None of them had special connections. They had a phone, a mentor, and consistency.
+
+If you want to see what's possible — come inside and see it for yourself:
+discord.gg/TvyFjdPqg`
+  },
+
+  whatsapp:{
+    story:`*DEAN AIM Global Update* 🟡
+
+{TOPIC}
+
+I've been building this quietly for a while now and wanted to share it with my contacts who've been asking.
+
+AIM Global is a health and wellness company operating since 2006 in 50+ countries. NAFDAC approved in Nigeria. Real offices in Lagos, Abuja, and Onitsha.
+
+The income system runs on a binary network — your team grows on two sides and the system pays you as it grows.
+
+Packages start from ₦52,500.
+
+If you want the full breakdown, join our community 👇
+discord.gg/TvyFjdPqg
+
+Or reply to this message directly. 📲`,
+
+    curiosity:`📌 *Status Update*
+
+{TOPIC}
+
+I've been building something on the side for a while. Today is the first time I'm mentioning it publicly.
+
+It involves a globally registered health company. NAFDAC approved products. Physical offices in Nigeria. A team system that works whether I'm awake or asleep.
+
+I'm not posting details here. If you're curious — message me directly or join here:
+discord.gg/TvyFjdPqg`,
+
+    cta:`*Invitation* 🟡
+
+{TOPIC}
+
+I'd like to personally invite you into the DEAN AIM Global community.
+
+It's a private group for people who want to understand what we're building — no pressure to join anything, just information and real conversations.
+
+Link: discord.gg/TvyFjdPqg
+
+Or WhatsApp me: +234 7043985667`,
+
+    education:`*How the system works — simple version* 📊
+
+{TOPIC}
+
+Binary network. Left leg + right leg.
+Every match = automatic bonus to you.
+8 income streams total.
+Start from ₦52,500.
+Best entry: Neoverse at ₦130,000 (3 accounts).
+
+NAFDAC approved products.
+18 years operating globally.
+Nigeria offices: Lagos, Abuja, Onitsha.
+
+Questions → discord.gg/TvyFjdPqg`
+  },
+
+  tiktok:{
+    story:`[HOOK — first 3 seconds]
+"I'm going to tell you about something I found — that I almost ignored."
+
+[BODY — story only, no income talk]
+{TOPIC}
+
+[OUTRO]
+"I'm not here to sell you anything today. Follow this page — over the next few days I'll show you everything. And if you're already curious, the link to our community is in my bio."
+
+[CAPTION — TikTok safe]
+I almost missed this completely. 3 years ago I had no idea this existed. Now it's part of how I live my life differently.
+
+This is a story — not an ad. Follow for the next part.
+
+📌 Community link in bio.`,
+
+    curiosity:`[HOOK]
+"Something exists in Nigeria that most people have never heard of — and it's been running for 18 years."
+
+[BODY]
+{TOPIC}
+
+Don't mention: income, earnings, money, join, sign up, network marketing, passive.
+
+Instead say: "what I found", "how it works", "what changed", "the system", "the company"
+
+[CAPTION — TikTok safe]
+I'm not selling anything in this video. I'm telling a story. And if something in this story sounds familiar to your situation — the community link is in my bio. Come ask questions there.`,
+
+    education:`[HOOK]
+"Let me explain how this actually works — in 60 seconds."
+
+[BODY — use metaphors, not income language]
+{TOPIC}
+
+Think of it like planting a tree. You plant it. You water it. The roots go deep. Then it grows on its own — and gives you fruit whether you're watching or not.
+
+[CAPTION — TikTok safe]
+A lot of people ask me to explain this simply. So I did. 
+
+If this made sense to you — the link to learn more is in my bio. No pressure. Just information.`,
+
+    proof:`[HOOK]
+"You want proof? Let me show you something you can verify yourself."
+
+[BODY]
+{TOPIC}
+
+Lagos. Abuja. Onitsha. Physical offices. NAFDAC approval. 18 years running globally.
+
+Not my words — verifiable facts. Go check.
+
+[CAPTION — TikTok safe]
+I don't expect anyone to trust me just because I said something. Go verify it yourself. The details are in our community — link in bio.`
+  },
+
+  instagram:{
+    story:`{TOPIC}
+
+Something I've been building quietly — and I think it's time to share.
+
+DEAN AIM Global is the Nigerian team inside Alliance in Motion Global — a company operating since 2006 across 50+ countries. NAFDAC approved. Three physical offices in Nigeria.
+
+I joined because I saw it verified in person. I stayed because the system works.
+
+If you want to understand what I'm building — my community is open to you. No commitment, no pressure.
+
+🔗 discord.gg/TvyFjdPqg
+📲 +234 7043985667
+
+.
+.
+.
+#Nigeria #NigeriaHustle #AIMGlobal #DEANAIMGlobal #NigerianEntrepreneur #Lagos #Abuja #WorkFromNigeria #HealthAndWellness #NAFDAC`,
+
+    cta:`Come inside.
+
+{TOPIC}
+
+Our community is where the real conversation happens — about the business, the products, the system, and what it actually looks like to build this from Nigeria.
+
+No pitch. No pressure. Just real people and real information.
+
+discord.gg/TvyFjdPqg
+
+.
+#DEANAIMGlobal #Nigeria #AIMGlobal #Lagos #Abuja #Onitsha`
+  }
+};
+
+// ══ GENERATE CONTENT ══
+async function generateContent(){
+  const topic = document.getElementById('topic-input').value.trim();
+  const type = document.getElementById('content-type').value;
+  const tone = document.getElementById('tone-select').value;
+
+  if(!topic){
+    alert('Please enter a topic or idea first.');
+    return;
+  }
+
+  const btn = document.getElementById('gen-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader-2" style="animation:spin 0.8s linear infinite;"></i>Generating...';
+
+  const area = document.getElementById('output-area');
+  area.innerHTML = '<div class="loading-bar" style="display:block;"><div class="spinner"></div><p>Writing your content for ' + [...selectedPlats].join(', ') + '...</p></div>';
+
+  // Build the prompt
+  const platList = [...selectedPlats];
+  const systemPrompt = `You are a social media content writer for DEAN AIM Global — a Nigerian network marketing team inside Alliance in Motion Global (AIM Global).
+
+Key facts:
+- Company name: DEAN AIM Global (Nigeria team)
+- Parent company: Alliance in Motion Global (AIM Global), founded 2006, 50+ countries
+- Products: NAFDAC approved health supplements (C24/7, Choleduz, Restorlyf)
+- Nigerian offices: Lagos (Buffalo House, 2 Allen Ave, Ikeja), Abuja (No.6 Kikuyu Close, Wuse 2), Onitsha (No.87 Upper New Market Rd, Anambra)
+- Discord: discord.gg/TvyFjdPqg
+- WhatsApp: +234 7043985667
+- Packages in Naira: Liteverse ₦52,500 | Entreverse ₦80,000 | Neoverse ₦130,000 | Technoverse ₦259,990 | Digiverse ₦500,000 | Megaverse ₦999,990
+- Income system: Binary network, 8 income streams, mentor-led
+
+RULES:
+1. Never sound like a salesperson or MLM recruiter
+2. Use storytelling, personal voice, genuine curiosity
+3. Never use: "passive income", "make money fast", "financial freedom" (TikTok flags this), "join my team", "MLM", "network marketing" (on TikTok)
+4. Facebook: can be more direct but still personal
+5. TikTok: story-ONLY format, no income language whatsoever
+6. WhatsApp: conversational, like texting a friend
+7. Instagram: visual storytelling with hashtags
+8. Always end with discord.gg/TvyFjdPqg or WhatsApp +234 7043985667 as CTA
+9. Tone: ${tone}
+10. Content type: ${type}
+
+For each platform requested, write a complete, ready-to-post piece of content.`;
+
+  const userPrompt = `Write platform-specific content for these platforms: ${platList.join(', ')}.
+
+The topic/idea the user wants to post about:
+"${topic}"
+
+Content type: ${type}
+Tone: ${tone}
+
+Write a separate complete post for EACH platform listed. Label each one clearly with the platform name. Make each version feel native to that platform's culture and audience. For TikTok, format it as a video script with Hook, Body, and Caption sections.`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{role:"user", content: userPrompt}]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content.map(b=>b.text||'').join('');
+    renderOutput(text, platList);
+  } catch(e) {
+    area.innerHTML = '<div class="output-placeholder"><i class="ti ti-alert-circle" style="color:var(--red);"></i><p>Something went wrong. Check your connection and try again.</p></div>';
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="ti ti-sparkles"></i>Generate Content';
+}
+
+function renderOutput(text, plats){
+  const area = document.getElementById('output-area');
+
+  // Split by platform sections
+  const sections = [];
+
+  // Try to find platform headings
+  const platNames = ['Facebook','WhatsApp','TikTok','Instagram','X (Twitter)'];
+  let remaining = text;
+
+  // Simple split: look for platform headers
+  const blocks = text.split(/\n(?=#{1,3}\s*(Facebook|WhatsApp|TikTok|Instagram|X \(Twitter\))|\*\*(Facebook|WhatsApp|TikTok|Instagram)\*\*|_{1,2}(Facebook|WhatsApp|TikTok|Instagram)_{1,2})/i);
+
+  let html = '';
+  if(blocks.length > 1){
+    blocks.forEach((block, i) => {
+      if(!block.trim()) return;
+      const platMatch = block.match(/^[#*_\s]*(Facebook|WhatsApp|TikTok|Instagram|X)[*_#\s]*/i);
+      const plat = platMatch ? platMatch[1] : (i===0 ? plats[0] : 'Content');
+      const content = block.replace(/^[#*_\s]*(Facebook|WhatsApp|TikTok|Instagram|X)[*_#\s:\n]*/i,'').trim();
+      if(!content) return;
+      html += buildBlock(plat, content);
+    });
+  } else {
+    // Single block — try to detect if multiple platforms
+    if(plats.length === 1){
+      html = buildBlock(plats[0], text.trim());
+    } else {
+      html = buildBlock('Generated Content', text.trim());
+    }
+  }
+
+  area.innerHTML = html || buildBlock('Generated Content', text.trim());
+}
+
+function buildBlock(label, content){
+  const id = 'block-'+Math.random().toString(36).substr(2,6);
+  return `<div class="result-block">
+    <div class="result-block-label">
+      ${label.toUpperCase()}
+      <button class="copy-btn" onclick="copyBlock('${id}')"><i class="ti ti-copy"></i>Copy</button>
+    </div>
+    <div class="result-text" id="${id}">${escHTML(content)}</div>
+  </div>`;
+}
+
+function escHTML(t){
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g,'<em>$1</em>');
+}
+
+// ══ DM SCRIPTS ══
+const DM_SCRIPTS = {
+  first:{
+    title:"First Contact Message",
+    icon:"ti-hand-stop",
+    color:"var(--g)",
+    scripts:[
+      {label:"Soft intro — WhatsApp/Messenger",text:`Hey [Name], hope you're doing well 🙂
+
+I've been building something quietly for the past few months and you came to mind. It's related to a health company that's been running globally since 2006 — and there's now a strong Nigerian team.
+
+I'm not going to pitch you in this message. I just want to know — are you open to seeing something? I'll send you a link and let you decide for yourself.`},
+      {label:"For old contacts you haven't spoken to",text:`Hey [Name]! It's been a while. Hope everything's good with you.
+
+Random message, I know 😄 — but something made me think of you today. I've been part of a business for a few months now and it's been going well. I won't bore you with details here but I thought of you specifically.
+
+If you're ever open to a quick conversation, let me know. No pressure at all.`}
+    ]
+  },
+  followup:{
+    title:"Follow-Up Message",
+    icon:"ti-clock",
+    color:"var(--blue)",
+    scripts:[
+      {label:"They went quiet after showing interest",text:`Hey [Name], just checking in 👋
+
+I know you said you'd take a look — totally understand life gets busy. No pressure from my end at all.
+
+If you're still curious, I'll send you our community link — it's the easiest way to get all the information in one place and ask questions in your own time.
+
+discord.gg/TvyFjdPqg
+
+Still here whenever you're ready 🙂`},
+      {label:"After 1 week of silence",text:`Hey [Name] — just a quick one.
+
+I don't want to keep following up if it's not the right time for you — so this will be my last message unless you want to continue.
+
+If something's changed and you're ready to look properly, our community is open: discord.gg/TvyFjdPqg
+
+And if it's not for you right now — no problem at all. Wishing you well either way 🙏`}
+    ]
+  },
+  interested:{
+    title:"Warm Lead — They Engaged",
+    icon:"ti-fire",
+    color:"var(--red)",
+    scripts:[
+      {label:"They commented on your post",text:`Hey [Name]! Thanks for commenting — glad it caught your attention 🙂
+
+To answer your question properly, I'd rather have a real conversation than explain everything in comments. Can I ask — what's your current situation? Working, business, or something else?
+
+That'll help me point you to exactly the right information.`},
+      {label:"They asked 'what is this?'",text:`Good question 😄
+
+It's a health and wellness business platform — but what makes it different is the team structure. I'll explain it in 2 minutes if you give me a chance.
+
+Quick version: you join, you build a team on two sides, when both sides are active the system pays you automatically. 8 different income streams. NAFDAC approved products. Physical offices in Lagos, Abuja, and Onitsha.
+
+The company has been running since 2006. This isn't new or experimental.
+
+Want me to send you the full overview? There's a proper site with everything: [YOUR WEBSITE LINK]`}
+    ]
+  },
+  website:{
+    title:"Send the Website",
+    icon:"ti-world",
+    color:"var(--purple)",
+    scripts:[
+      {label:"Natural website handoff",text:`I put everything in one place so you don't have to read 20 messages from me 😄
+
+Check this out: [YOUR WEBSITE LINK]
+
+Go to the 'How It Works' section first — that diagram explains the team structure clearly in 2 minutes. Then look at the packages.
+
+After that, whatever questions you have — I'm right here. Or you can ask in our community: discord.gg/TvyFjdPqg`},
+      {label:"After a good conversation",text:`Based on what you shared, I think this will make sense for you.
+
+Here's the full breakdown: [YOUR WEBSITE LINK]
+
+The Neoverse package at ₦130,000 is probably your best starting point — 3 accounts in one, so your income multiplies from day one.
+
+Take your time going through it. When you're ready to talk properly, just fill in the consultation form on the site — it goes straight to my WhatsApp.`}
+    ]
+  },
+  discord:{
+    title:"Discord Invite",
+    icon:"ti-brand-discord",
+    color:"#7289DA",
+    scripts:[
+      {label:"Casual invite",text:`The best place for the real conversation is our community — it's where I answer questions properly and you can see what the team actually looks like.
+
+Join here: discord.gg/TvyFjdPqg
+
+It's free. No commitment. Introduce yourself when you get in and I'll personally walk you through everything.`},
+      {label:"After they've seen the website",text:`Now that you've seen the site — the next step is coming inside the community.
+
+This is where the live training happens, where you can ask anything, and where you'll meet people who are already building this from Nigeria.
+
+discord.gg/TvyFjdPqg
+
+I'm in there daily. See you on the other side 🙂`}
+    ]
+  },
+  consult:{
+    title:"Book a Consultation",
+    icon:"ti-calendar",
+    color:"var(--green)",
+    scripts:[
+      {label:"Move them to a real conversation",text:`I think you're ready for a proper conversation — not WhatsApp back and forth 😄
+
+Let me ask you a few things and give you a personalised breakdown based on your situation. It takes 15-20 minutes and I'll show you exactly what makes sense for where you are right now.
+
+Two options:
+1. Fill in the consultation form on the site: [YOUR WEBSITE LINK]
+2. Or just say YES here and I'll call you on WhatsApp
+
+Which works for you?`},
+      {label:"Closing a warm lead",text:`Based on everything we've talked about — I think the Neoverse at ₦130,000 is the right entry for you. 3 accounts, full mentorship from day one, and I'll be with you every step.
+
+When you're ready:
+→ Website: [YOUR WEBSITE LINK]
+→ WhatsApp me: +234 7043985667
+→ Community: discord.gg/TvyFjdPqg
+
+The only thing I can't do is make the decision for you. But I'll be here when you're ready 🙏`}
+    ]
+  },
+  nurture:{
+    title:"Long-term Nurture",
+    icon:"ti-heart",
+    color:"var(--red)",
+    scripts:[
+      {label:"Week 2 — value message",text:`Hey [Name] — not selling anything today 😄
+
+Just wanted to share something that came up this week. One of the people on our team in Nigeria made their first team bonus this week — started less than 3 weeks ago.
+
+I know you're still thinking. That's completely fine. Just wanted you to know the thing you were thinking about is still moving 🙂
+
+If you want a proper chat anytime — discord.gg/TvyFjdPqg or +234 7043985667`},
+      {label:"Month 1 — check-in",text:`Hey [Name]! It's been about a month since we chatted about DEAN AIM Global.
+
+No pressure — just genuinely checking in. A lot has changed in our team since then and I thought of you.
+
+If the timing is better now, I'd love to have a proper conversation. If it's still not the right time, no worries at all.
+
+Either way — hope life is treating you well 🙏`}
+    ]
+  }
+};
+
+function showDM(type){
+  document.querySelectorAll('.dm-type-btn').forEach(b=>b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  const dm = DM_SCRIPTS[type];
+  const out = document.getElementById('dm-output');
+  let html = `<div style="margin-bottom:1rem;">
+    <div style="font-size:16px;font-weight:600;color:var(--t1);font-family:'Instrument Serif',serif;margin-bottom:0.25rem;">${dm.title}</div>
+    <div style="font-size:12px;color:var(--t3);">Click copy on any script and paste directly into WhatsApp or Messenger</div>
+  </div>`;
+  dm.scripts.forEach((s,i)=>{
+    const id='dm-'+type+i;
+    html+=`<div class="result-block" style="margin-bottom:1rem;">
+      <div class="result-block-label">
+        ${s.label.toUpperCase()}
+        <button class="copy-btn" onclick="copyBlock('${id}')"><i class="ti ti-copy"></i>Copy</button>
+      </div>
+      <div class="result-text" id="${id}">${escHTML(s.text)}</div>
+    </div>`;
+  });
+  out.innerHTML = html;
+}
+
+// ══ OBJECTIONS ══
+const OBJECTIONS = [
+  {icon:"ti-alert-triangle",color:"rgba(248,113,113,0.1)",iconColor:"var(--red)",
+   q:"Is this MMM? Is it a scam?",
+   r:`I completely understand why you'd ask that — and I respect it.
+
+Here's what I'd say: don't take my word for it. Go verify it yourself.
+
+AIM Global has been operating since 2006 — 18 years. They have physical offices in Lagos (Ikeja), Abuja (Wuse 2), and Onitsha. You can walk in this week. The products are approved by NAFDAC — Nigeria's own regulatory body.
+
+MMM had no products. No offices. No 18-year history. This is not that.
+
+Come see for yourself: discord.gg/TvyFjdPqg`},
+  {icon:"ti-currency-naira",color:"rgba(201,168,76,0.08)",iconColor:"var(--g)",
+   q:"I don't have money to start",
+   r:`That's the most honest starting point and I respect it.
+
+The smallest package is ₦52,500. And it comes with NAFDAC-approved health products worth that amount at retail — so even if you don't build the business, you can sell the products and recover your money.
+
+But let me ask you something: if your income doesn't change, where will you be in 6 months? Same place?
+
+I'm not pressuring you. I'm asking you to think about it. Come into the community when you're ready: discord.gg/TvyFjdPqg`},
+  {icon:"ti-clock",color:"rgba(96,165,250,0.08)",iconColor:"var(--blue)",
+   q:"I don't have time for this",
+   r:`This business runs on your own schedule. No fixed hours. No mandatory meetings. No boss.
+
+You build it in the gaps — morning commute, lunch break, evenings. Most people start part-time and let it grow.
+
+The real question is: do you have 1 hour a day to work on your own future? Because that's all it takes to start.
+
+Our community is open whenever you are: discord.gg/TvyFjdPqg`},
+  {icon:"ti-user-x",color:"rgba(167,139,250,0.08)",iconColor:"var(--purple)",
+   q:"I'm not good at selling",
+   r:`You're not selling products to strangers. You're sharing information with people you know — and people who come to you after seeing your content.
+
+You don't convince anyone. You inform. You let them decide. Your mentor teaches you how to do exactly that from day one.
+
+If you can send a WhatsApp message — you can do this.
+
+Let's talk properly: discord.gg/TvyFjdPqg`},
+  {icon:"ti-trending-down",color:"rgba(248,113,113,0.08)",iconColor:"var(--red)",
+   q:"I tried network marketing before and lost money",
+   r:`That's a real experience and I'm not going to dismiss it.
+
+Most people lose in network marketing because they joined companies with no real products — and got no real support after signing up.
+
+What's different here: NAFDAC-approved products people actually use and reorder. Physical offices in Nigeria you can visit. And a mentor assigned to you from day one.
+
+Before you decide — come see for yourself. No pressure: discord.gg/TvyFjdPqg`},
+  {icon:"ti-help-circle",color:"rgba(74,222,128,0.08)",iconColor:"var(--green)",
+   q:"Let me think about it",
+   r:`Of course — take all the time you need.
+
+While you're thinking, join our community so you can see what's happening inside and ask any question that comes up. That way you're making a decision with full information, not just my word for it.
+
+discord.gg/TvyFjdPqg
+
+I'll be here when you're ready 🙏`},
+  {icon:"ti-map-pin",color:"rgba(201,168,76,0.08)",iconColor:"var(--g)",
+   q:"I'm not in Lagos / I'm in another state",
+   r:`No problem at all. The business is built online — from your phone, from wherever you are.
+
+We have active team members in multiple states. Your mentor works with you remotely via WhatsApp and Zoom.
+
+If you ever want to see a physical office — Lagos, Abuja, and Onitsha all have locations you can visit.
+
+But you don't need to be anywhere specific to start: discord.gg/TvyFjdPqg`},
+  {icon:"ti-clock-2",color:"rgba(96,165,250,0.08)",iconColor:"var(--blue)",
+   q:"How long before I earn?",
+   r:`You can earn your first bonus the same day someone joins your team — it's called a Direct Connecting Bonus and it's instant.
+
+The Matched Sales Bonus kicks in as soon as both sides of your account are active.
+
+Realistically — with mentorship and consistent effort — most people see their first earnings within 2 to 4 weeks.
+
+It's not magic. It's a business. But it moves faster than most.
+
+Ready to start? discord.gg/TvyFjdPqg`}
+];
+
+function renderObjections(){
+  const grid = document.getElementById('obj-grid');
+  if(grid.innerHTML) return;
+  grid.innerHTML = OBJECTIONS.map((o,i)=>{
+    const id='obj-'+i;
+    return `<div class="obj-card">
+      <div class="obj-card-top">
+        <div class="obj-icon" style="background:${o.color};"><i class="ti ${o.icon}" style="color:${o.iconColor};"></i></div>
+        <div>
+          <h4>${o.q}</h4>
+          <p class="obj-q">Common objection from prospects</p>
+        </div>
+      </div>
+      <div class="obj-body">
+        <div class="obj-response" id="${id}">${escHTML(o.r)}</div>
+        <button class="obj-copy" onclick="copyBlock('${id}')"><i class="ti ti-copy"></i>Copy response</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══ CALENDAR ══
+const CAL_PLAN = [
+  {type:'fb',text:'Day 1: Curiosity Hook'},
+  {type:'wa',text:'WhatsApp Status: Story tease'},
+  {type:'fb',text:'Day 2: 100 people stats'},
+  {type:'all',text:'Day 3: Introduce DEAN AIM Global'},
+  {type:'fb',text:'Day 4: Proof & legitimacy'},
+  {type:'wa',text:'WhatsApp: Office locations'},
+  {type:'fb',text:'Day 5: Personal story'},
+  {type:'all',text:'Day 6: How the system works'},
+  {type:'fb',text:'Day 7: Real results'},
+  {type:'wa',text:'WhatsApp Status: Invite'},
+  {type:'all',text:'Day 8: Final CTA — Join Discord'},
+  {type:'fb',text:'Behind the scenes post'},
+  {type:'wa',text:'WhatsApp: FAQ response'},
+  {type:'fb',text:'Team win story'},
+  {type:'all',text:'Mindset — different path post'},
+  {type:'fb',text:'Product education'},
+  {type:'wa',text:'WhatsApp Status: Quote'},
+  {type:'fb',text:'Objection video — Is this real?'},
+  {type:'all',text:'NAFDAC & offices proof post'},
+  {type:'fb',text:'Income system breakdown'},
+  {type:'wa',text:'WhatsApp: Community invite'},
+  {type:'fb',text:'New member welcome post'},
+  {type:'all',text:'Weekly team highlight'},
+  {type:'fb',text:'FAQ: How much to start?'},
+  {type:'wa',text:'WhatsApp Status: Results story'},
+  {type:'fb',text:'Lifestyle — why I do this'},
+  {type:'all',text:'Month reflection post'},
+  {type:'fb',text:'Packages breakdown post'},
+  {type:'wa',text:'WhatsApp: Final community push'},
+  {type:'all',text:'Day 30: Big community CTA'}
+];
+
+function renderCalendar(){
+  const c = document.getElementById('calendar-container');
+  if(c.innerHTML) return;
+  const days = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+  let html = `<div class="cal-grid">`;
+  days.forEach(d=>{ html+=`<div class="cal-day-label">${d}</div>`; });
+  // offset for month starting on Wednesday (day index 2)
+  const offset = 2;
+  for(let i=0;i<offset;i++) html+=`<div></div>`;
+  for(let d=1;d<=30;d++){
+    const plan = CAL_PLAN[d-1];
+    const cls = plan ? 'cal-cell has-post' : 'cal-cell';
+    const tagCls = plan ? (plan.type==='wa'?'cal-post-tag wa':plan.type==='all'?'cal-post-tag wa':'cal-post-tag') : '';
+    html+=`<div class="${cls}">
+      <div class="cal-num">${d}</div>
+      ${plan?`<span class="${tagCls}">${plan.text}</span>`:''}
+    </div>`;
+  }
+  html+=`</div>`;
+  html+=`<div style="background:var(--s2);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:1.25rem;margin-top:1rem;">
+    <div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:0.75rem;">💡 How to use this calendar</div>
+    <div style="font-size:12px;color:var(--t2);line-height:1.8;">
+      1. Go to the <strong style="color:var(--t1);">Content Generator</strong> tab → pick the day's topic → click Generate<br/>
+      2. Copy the Facebook version → paste directly to your Facebook profile<br/>
+      3. Copy the WhatsApp version → post to your WhatsApp Status<br/>
+      4. Every post ends with your Discord link: <strong style="color:var(--g);">discord.gg/TvyFjdPqg</strong><br/>
+      5. Reply to every comment. DM everyone who reacts. Use the DM Scripts tab for word-for-word messages.
+    </div>
+  </div>`;
+  c.innerHTML = html;
+}
+
+// ══ COPY ══
+function copyBlock(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const text = el.innerText || el.textContent;
+  navigator.clipboard.writeText(text).then(()=>showToast('Copied to clipboard!')).catch(()=>{
+    const ta=document.createElement('textarea');
+    ta.value=text;document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');document.body.removeChild(ta);
+    showToast('Copied!');
+  });
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// Init
+renderObjections();
+renderCalendar();
+showDM('first');
+// Fix: init showDM without event
+function showDM(type){
+  document.querySelectorAll('.dm-type-btn').forEach(b=>b.classList.remove('active'));
+  const btn = document.querySelector(`.dm-type-btn[onclick="showDM('${type}')"]`);
+  if(btn) btn.classList.add('active');
+  const dm = DM_SCRIPTS[type];
+  if(!dm) return;
+  const out = document.getElementById('dm-output');
+  if(!out) return;
+  let html = `<div style="margin-bottom:1rem;">
+    <div style="font-size:16px;font-weight:600;color:var(--t1);font-family:'Instrument Serif',serif;margin-bottom:0.25rem;">${dm.title}</div>
+    <div style="font-size:12px;color:var(--t3);">Click copy on any script and paste directly into WhatsApp or Messenger</div>
+  </div>`;
+  dm.scripts.forEach((s,i)=>{
+    const id='dm-'+type+i;
+    html+=`<div class="result-block" style="margin-bottom:1rem;">
+      <div class="result-block-label">
+        ${s.label.toUpperCase()}
+        <button class="copy-btn" onclick="copyBlock('${id}')"><i class="ti ti-copy"></i>Copy</button>
+      </div>
+      <div class="result-text" id="${id}">${escHTML(s.text)}</div>
+    </div>`;
+  });
+  out.innerHTML = html;
+}
+</script>
+</body>
+</html>
